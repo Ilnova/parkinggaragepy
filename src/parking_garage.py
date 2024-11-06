@@ -36,8 +36,9 @@ class ParkingGarage:
         GPIO.output(self.LED_PIN, False)
 
     def check_occupancy(self, pin: int) -> bool:
-        # To be implemented
-        pass
+        # L'esercizio consiste nel riempire questi spazi vuoti perché dobbiamo farli noi
+        return GPIO.input(pin)
+        #in questo caso abbiamo il pin che deve essere verificato come occupato
 
     def get_number_occupied_spots(self) -> int:
         # To be implemented
