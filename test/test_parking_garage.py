@@ -33,8 +33,8 @@ class TestParkingGarage(TestCase):
         number= system.get_number_occupied_spots()
         self.assertEqual(number,True)
         #Verificare perché da errore su mock_distance_sensor nel momento del test
-    @patch.object(SDL_DS3231, 'read_datatime')
-    def test_calculate_parking_fee(self, mock_exit_time: Mock):
+    @patch.object(SDL_DS3231, 'read_datetime')
+    def test_calculate_parking_fee_minuteszero(self, mock_exit_time: Mock):
         #tempo exit, ci conviene test ad orario spaccato senza minuti
         mock_exit_time.return_value= datetime(2024,11,6,12,00,00)
         system = ParkingGarage()
@@ -42,3 +42,11 @@ class TestParkingGarage(TestCase):
         fee= system.calculate_parking_fee(datetime(2024,11,6,10,00,00))
         self.assertEqual(5,fee) #Sono due ore quindi 2.50x2 ci aspettiamo 5 euro
         #ragioniamo sugli input, ora gli indirect input (aggiunti sopra col nome di mock)
+
+    @patch.object(SDL_DS3231, 'read_datetime')
+    def test_calculate_parking_fee_minutes(self, mock_exit_time: Mock):
+            mock_exit_time.return_value = datetime(2024, 11, 6, 12, 1, 00)
+            system = ParkingGarage()
+            # qui gli verrà passato l'entry time
+            fee = system.calculate_parking_fee(datetime(2024, 11, 6, 10, 0, 00))
+            self.assertEqual(2.50, fee)  #passa solo un minuto, ma il pagamento minimo è comunque di un'ora
